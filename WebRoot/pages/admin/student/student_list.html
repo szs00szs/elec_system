@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>学生列表</title> <% include("/static/component/include/head.html")
+{}%>
+<script src="/static/component/echarts/dist/echarts.js"></script>
+<script src="/static/component/echarts/map/js/china.js"></script>
+
+</head>
+<body>
+	<h3>查询列表</h3>
+
+
+	<!-- 数据列表 -->
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>ID</th>
+				<th>name</th>
+				<th>sex</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for(item in page.list){ %>
+			<tr>
+				<td>${itemLP.index }</td>
+				<td>${item.id}</td>
+				<td>${item.name}</td>
+				<td>${item.sex}</td>
+			</tr>
+			<% } %>
+		</tbody>
+	</table>
+
+
+	<%includeFileTemplate("/common/_paginate.html",
+	{"currentPage":page.pageNumber,"totalPage":page.totalPage,"actionUrl":"/student/list/"})
+	{} %>
+
+
+	<div id="main" class="col-xs-4" style="height: 500px"></div>
+	<script type="text/javascript">
+		$.get('/static/component/echarts/map/json/china.json', function(
+				chinaJson) {
+			echarts.registerMap('china', chinaJson);
+			// 基于准备好的dom，初始化echarts实例
+			var myChart = echarts.init(document.getElementById('main'));
+
+			//配置地图
+			myChart.setOption({
+				series : [ {
+					type : 'map',
+					map : 'china'
+				} ]
+			});
+		});
+		//            myChart.setOption(option);
+	</script>
+
+	<div id="main1" class="col-xs-4" style="height: 500px"></div>
+	
+	<script type="text/javascript">
+			var myChart = echarts.init(document.getElementById('main1'));
+
+			option = {
+				    backgroundColor: '#2c343c',
+
+				    title: {
+				        text: 'Customized Pie',
+				        left: 'center',
+				        top: 20,
+				        textStyle: {
+				            color: '#ccc'
+				        }
+				    },
+
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} ({d}%)"
+				    },
+
+				    visualMap: {
+				        show: false,
+				        min: 80,
+				        max: 600,
+				        inRange: {
+				            colorLightness: [0, 1]
+				        }
+				    },
+				    series : [
+				        {
+				            name:'访问来源',
+				            type:'pie',
+				            radius : '55%',
+				            center: ['50%', '50%'],
+				            data:[
+				                {value:335, name:'直接访问'},
+				                {value:310, name:'邮件营销'},
+				                {value:274, name:'联盟广告'},
+				                {value:235, name:'视频广告'},
+				                {value:400, name:'搜索引擎'}
+				            ].sort(function (a, b) { return a.value - b.value}),
+				            roseType: 'angle',
+				            label: {
+				                normal: {
+				                    textStyle: {
+				                        color: 'rgba(255, 255, 255, 0.3)'
+				                    }
+				                }
+				            },
+				            labelLine: {
+				                normal: {
+				                    lineStyle: {
+				                        color: 'rgba(255, 255, 255, 0.3)'
+				                    },
+				                    smooth: 0.2,
+				                    length: 10,
+				                    length2: 20
+				                }
+				            },
+				            itemStyle: {
+				                normal: {
+				                    color: '#c23531',
+				                    shadowBlur: 200,
+				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+				                }
+				            }
+				        }
+				    ]
+				};
+			 myChart.setOption(option);
+	</script>
+
+
+</body>
+</html>
+
+

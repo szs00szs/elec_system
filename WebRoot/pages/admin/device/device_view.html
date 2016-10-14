@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>详情</title> 
+<% include("/static/component/include/head.html") {}%>
+<form name="form1" action="" method="post" class="form-horizontal" role="form">
+	<!-- 数据列表 -->
+	<table class="table">
+		<%  // 列表头部 %>
+			<tr>
+					<td>设备编号</td>
+					<td>
+					${model.id}
+					</td>
+					<td>客户名称</td>
+					<td>
+					${model.name}
+					</td>
+				</tr>
+				<tr>
+					<td>供应商</td>
+					<td>
+					${model.provider}
+					</td>
+					<td>健康状态</td>
+					<td>
+					<% if(item.health_status==-1){ %>
+							不详	
+					<% } else if(item.health_status==0){ %>
+							损坏		
+					<% } else if(item.health_status==1){ %>
+							一般
+					<% } else if(item.health_status==2){ %>
+							健康					
+					<% } %>
+					</td>
+				</tr>
+				<tr>
+					<td>安装时间</td>
+					<td>
+					${model.create_time }
+					</td>
+					<td>部署区域</td>
+					<td>
+					${model.area_name }
+					</td>
+				</tr>
+				<tr>
+				<td>运行状态</td>
+				<td>
+				<% if(item.run_status==0){ %>
+							关闭		
+					<% } else if(item.run_status==1){ %>
+							开启
+					<% } else if(item.run_status==2){ %>
+							待机					
+					<% } %>
+				</td>
+				<td></td>
+				<td></td>
+				
+				</tr>
+	</table>
+	
+	<div style="height: 50px;clear: both;">&nbsp;</div>
+	<nav class="navbar navbar-default navbar-fixed-bottom">
+	  <div class="container" style="padding: 5px 0px 5px 0px;text-align: center;">
+		<button class="btn btn-default" onclick="closeIframe();return false;">关 闭</button>
+	  </div>
+	</nav>
+	
+</form>
+</html>	
