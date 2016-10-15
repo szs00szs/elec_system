@@ -1,6 +1,10 @@
 package com.hansam.modules.admin.device;
 
+import java.util.List;
+
 import com.hansam.component.annotation.ControllerBind;
+import com.hansam.component.excel.PoiKit;
+import com.hansam.component.excel.PoiRender;
 import com.hansam.component.jfinal.BaseController;
 import com.hansam.util.SQLUtils;
 import com.hansam.util.StrUtils;
@@ -63,6 +67,41 @@ public class DeviceController extends BaseController {
 	}
 	
 	public void delete(){
+		
+	}
+	
+	public void export(){
+		
+		String starttime = getPara("starttime");
+		String endtime = getPara("endtime");
+
+		SQLUtils sql = new SQLUtils("SELECT " 
+						+ "o1.id AS device_id, "
+						+ "o1.`name` AS device_name, "
+						+ "o1.run_status AS run_status, "
+						+ "o1.health_status AS health_status, "
+						+ "o1.create_time create_time, "
+						+ "o1.last_time last_time, "
+						+ "o2.area_name AS area_name "
+						+ "FROM device o1, area o2 "
+						+ "WHERE o1.area_id = o2.id ");
+
+		if (StrUtils.isNotEmpty(starttime)) {
+			sql.append(" and o1.create_time >= '").append(starttime).append("' ");
+		}
+		if (StrUtils.isNotEmpty(endtime)) {
+			sql.append(" and o1.create_time <= '").append(endtime).append("' ");
+		}
+		
+		List<Record> list = Db.find(sql.toString());
+		
+		String filename = "设备导出表";
+		String columns[] = { "device_id", "device_name", "run_status","health_status","create_time" ,"last_time" ,"area_name" };
+		String headers[] = { "设备ID", "设备名", "运行状态","健康状态","安装时间" ,"更新时间" ,"所属部门" };
+		
+		render(new PoiRender(PoiKit.saveFile(columns,headers, list), filename + ".xls"));
+		
+
 		
 	}
 

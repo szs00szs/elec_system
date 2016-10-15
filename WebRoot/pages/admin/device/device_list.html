@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>首页</title> 
-<% include("/static/component/include/head.html") {}%>
+<% include("/pages/template/head.html") {}%>
 <script type="text/javascript">
 	var oper;
 	jQuery(function($) {
@@ -22,7 +22,7 @@
 				oper.list();
 			},
 			device_export : function() {
-				var url = '/admin/device/device_export';
+				var url = '/admin/device/export';
 				this.form.action = url;
 				this.form.submit();
 			},

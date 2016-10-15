@@ -86,7 +86,7 @@ public class StudentController extends BaseController {
 		String title = dateFormat.format(d);
 
 		String s[] = { "id", "name", "sex" };
-		render(new PoiRender(PoiKit.saveFile(s, list), title + filename + "_统计表" + ".xls"));
+		render(new PoiRender(PoiKit.saveFile(s,s, list), title + filename + "_统计表" + ".xls"));
 
 	}
 

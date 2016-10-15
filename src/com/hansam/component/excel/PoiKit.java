@@ -14,7 +14,7 @@ import com.jfinal.plugin.activerecord.Record;
  * @version 创建时间：2016年8月18日 上午10:00:31
  */
 public class PoiKit {
-	public static HSSFWorkbook saveFile(String[] s, List<Record> list) {
+	public static HSSFWorkbook saveFile(String[] columns, String[] headers, List<Record> list) {
 
 		// 创建工作薄
 		HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
@@ -26,12 +26,12 @@ public class PoiKit {
 		HSSFRow row = hssfSheet.createRow(0);
 		// 创建单元格，设置表头 创建列
 		HSSFCell cell = null;
-		// 便利表头
-		for (int i = 0; i < s.length; i++) {
+		// 创建自定义表头
+		for (int i = 0; i < headers.length; i++) {
 			// 创建传入进来的表头的个数
 			cell = row.createCell(i);
 			// 表头的值就是传入进来的值
-			cell.setCellValue(s[i]);
+			cell.setCellValue(headers[i]);
 
 		}
 
@@ -48,11 +48,11 @@ public class PoiKit {
 				// 得到所有的行 一个record就代表 一行
 				record = list.get(i);
 				// 在有所有的记录基础之上，便利传入进来的表头,再创建N行
-				for (int j = 0; j < s.length; j++) {
+				for (int j = 0; j < columns.length; j++) {
 
 					cell = row.createCell(j);
 					// 把每一行的记录再次添加到表头下面 如果为空就为 "" 否则就为值
-					cell.setCellValue(record.get(s[j]) == null ? "" : record.get(s[j]).toString());
+					cell.setCellValue(record.get(columns[j]) == null ? "" : record.get(columns[j]).toString());
 				}
 			}
 		}
