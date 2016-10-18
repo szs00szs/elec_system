@@ -21,6 +21,8 @@ public class DeviceController extends BaseController {
 	public static final String path = "/pages/admin/device/device_";
 
 	public void list() {
+	
+		System.err.println(getSessionUser());
 
 		String starttime = getPara("starttime");
 		String endtime = getPara("endtime");
@@ -67,7 +69,7 @@ public class DeviceController extends BaseController {
 	}
 	
 	public void delete(){
-		
+		System.err.println("jjjj");		
 	}
 	
 	public void export(){

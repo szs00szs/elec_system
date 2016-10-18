@@ -4,6 +4,7 @@ import com.hansam.component.annotation.ControllerBind;
 import com.hansam.component.jfinal.BaseController;
 import com.hansam.util.Md5Utils;
 import com.hansam.util.StrUtils;
+import com.jfinal.aop.Clear;
 import com.jfinal.ext.render.CaptchaRender;
 
 /**
@@ -11,6 +12,7 @@ import com.jfinal.ext.render.CaptchaRender;
  * @version 创建时间：2016年8月19日 下午1:53:25
  */
 @SuppressWarnings("deprecation")
+@Clear
 @ControllerBind(controllerKey = "/")
 public class UserController extends BaseController{
 	public static final String loginPage = "/pages/system/user/login.html";

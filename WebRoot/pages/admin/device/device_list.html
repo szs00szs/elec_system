@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>首页</title> 
 <% include("/pages/template/head.html") {}%>
+<!-- My97DatePicker -->
+<% include("/static/component/include/my97DatePicker.html"){} %>
 <script type="text/javascript">
 	var oper;
 	jQuery(function($) {
@@ -37,12 +39,12 @@
 				Iframe(url, this.width, this.height, title);
 			},
 			edit : function(id) {
-				var url = 'admin/device/edit/'+id;
+				var url = '/admin/device/edit/'+id;
 				var title = '修改设备';
 				Iframe(url, this.width, this.height, title);
 			},
 			del : function(id) {
-				var url = 'admin/device/delete/'+id;
+				var url = '/admin/device/delete/'+id;
 				var title = '确认要删除该设备信息？';
 				Confirm(title, function() {
 					form1.action = url;
@@ -96,7 +98,7 @@
 			<thead>
 				<tr>
 					<th>序号</th> 
-					<th>设备ID</th> 
+					<th name="id" class="sorting">设备ID</th> 
 					<th>设备名</th> 
 					<th>运行状态</th>
 					<th>健康状态</th>
