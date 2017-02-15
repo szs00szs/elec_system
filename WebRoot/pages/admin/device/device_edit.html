@@ -1,0 +1,136 @@
+<% 
+DIRECTIVE SAFE_OUTPUT_OPEN;
+var headContent = {
+	include("/pages/template/head.html"){}
+%>
+<script type="text/javascript">
+	var oper = {
+		save:function(id){
+			if(!validForm()) {
+				return false;
+			}
+			
+			oper.update();
+			
+			id = id || '0';
+			var url = 'admin/padinfo/save/'+id;
+			form1.action = url;
+			form1.submit();
+			return true;
+		}
+		,update:function(){
+			var ssid = $('[name="model.ssid"]').val();
+			var padid = ssid.replace(/kkjl_/g, "");
+			$('[name="model.padid"]').val(padid);
+ 		},
+ 		activationPad:function(id) {
+			var url = 'admin/padinfo/activationPad/'+id;
+			form1.action = url;
+			form1.submit();
+			return true;
+		}
+	};
+	
+	
+	$(document).ready(function(){
+		var modelId = $("input[name='model.id']").val() || '';
+		console.log(modelId);
+		if(modelId != "") {
+			$("#roleType").remove();
+		} else {
+			$("#roleType").show();
+		}
+	})
+</script>
+
+<%
+};
+var bodyContent = {
+%>
+<form name="form1" action="" method="post" class="form-horizontal"
+		role="form" >
+	<input type="hidden" name="model.id" value="${model.id}" />
+	<input type="hidden" name="model.is_enabled" value="${model.is_enabled!0}" />
+	<table class="table">
+		<%  // 列表头部%>
+				<tr>
+					<td style="width: 30%">device id</td>
+					<td>
+					<input class="form-control" type="text" name="model.id" value="${model.id}"  valid='vtext' validname='device id' readonly="readonly"  />
+					</td>
+				</tr>
+				<tr>
+					<td>ssid</td>
+					<td>
+					<input class="form-control" type="text" name="model.ssid" value="${model.ssid }" onchange="oper.update();"  valid='vtext' validname='ssid'  />
+					</td>
+				</tr>
+				<tr>
+					<td>IC卡类型</td>
+					<td>
+						<select class="form-control" id="card_type" name="model.card_type">
+							<option  value="">请选择IC卡类型</option>
+							${flyfox.dictSelectByCode('oilcard_type' , model.card_type!'')  }
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>IC卡</td>
+					<td>
+					<input class="form-control" type="text" name="model.iccard" value="${model.iccard }"  valid='vtext' validname='IC卡'  maxlength="19"/>
+					</td>
+				</tr>
+				<tr>
+					<td>车主ID</td>
+					<td>
+					<input class="form-control" type="text" name="model.car_user_id" value="${model.car_user_id }"  valid='vnum' validname='车主ID'  />
+					</td>
+				</tr>
+				<tr>
+					<td>4G流量卡号</td>
+					<td>
+					<input class="form-control" type="text" name="model.lte_4g" value="${model.lte_4g }"  id="lte_4g" valid='vtext' validname='4G流量卡号' onchange="getIccidState();" maxlength="20"/>
+					</td>
+				</tr>
+				<tr>
+					<td>4G流量卡号激活状态</td>
+					<td id="iccidState">
+					    ${lte4gState}
+					</td>
+				</tr>
+				<tr id="roleType">
+					<td>用户角色</td>
+					<td>
+						<select class="form-control" id="role_type" name="role_type" valid='vselect_y' validname='用户角色'>
+						<option  value="">--请选择--</option>
+						${flyfox.dictSelectByCode("roleType", role_type)}
+						</select>
+					</td>
+				</tr>	
+				<tr>
+					<td>备注</td>
+					<td>
+						<textarea class="form-control" name="model.remark"  rows="3" cols="100">${model.remark!'' }</textarea>
+					</td>
+				</tr>
+	</table>
+	
+	<div style="height: 50px;clear: both;">&nbsp;</div>
+	<nav class="navbar navbar-default navbar-fixed-bottom">
+	  <div class="container" style="padding: 5px 0px 5px 0px;text-align: center;">
+	    <% if (lte4gState=="已停用" || lte4gState == "可测试"|| lte4gState == "待激活"|| lte4gState == "库存"){%>
+ 	 	<button class="btn btn-primary" onclick="return oper.activationPad(${model.id});" >激活</button> 
+ 	 	<% }else{ %>
+ 	 	<button class="btn btn-primary" disabled>激活</button> 
+ 	 	<% } %>
+		<button class="btn btn-primary" onclick="return oper.save(${model.id});">保 存</button>
+		<button class="btn btn-default" onclick="closeIframe();return false;">关 闭</button>
+	  </div>
+	</nav>
+</form>
+<%}; %>
+
+<% layout("/pages/template/_layout.html",{head:headContent,body:bodyContent}){ %>
+<%}
+DIRECTIVE SAFE_OUTPUT_CLOSE; 
+%>

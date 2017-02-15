@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>首页</title> 
-<% include("/pages/template/head.html") {}%>
+<% var headContent = { include("/pages/template/head.html"){} %>
 <!-- My97DatePicker -->
 <% include("/static/component/include/my97DatePicker.html"){} %>
 <script type="text/javascript">
@@ -59,6 +54,9 @@
 		oper.list();
 	};
 </script>
+
+<% };
+var bodyContent = { %>
 	<form name="form1" action="" method="post"  class="form-inline" role="form">
 		<input type="hidden" name="form.orderColumn" value="${form.orderColumn!''}" />
 		<input type="hidden" name="form.orderAsc" value="${form.orderAsc!''}" />
@@ -135,7 +133,7 @@
 					<% } %>
 					</td>
 					<td>${item.create_time,dateFormat='yyyy-MM-dd HH:mm:ss'}</td> 
-					<td>${item.last_time,dateFormat='yyyy-MM-dd HH:mm:ss'}</td> 
+					<td>${item.update_time,dateFormat='yyyy-MM-dd HH:mm:ss'}</td> 
 					<td>${item.area_name}</td> 
 					<td>
 						<a href="javascript:void(0);" class="btn btn-sm btn-success" onclick="oper.view(${item.device_id});">查看</a> 
@@ -146,8 +144,11 @@
 			<% } %>
 			</tbody>
 		</table>
-		</form>
-	</html>	
-	<%includeFileTemplate("/common/_paginate.html",
+		<%include("/pages/template/_paginate.html",
 		{"currentPage":page.pageNumber,"totalPage":page.totalPage,"actionUrl":"/admin/device/list/"}) {} 
-	 %>
+		%>
+		</form>
+	<% }; %>
+
+	 <% layout("/pages/template/_layout.html",{head:headContent,body:bodyContent}){} %>
+	 

@@ -24,6 +24,7 @@ public class UserInterceptor implements Interceptor {
 		user = controller.getSessionAttr("sessionUser");
 		
 		if (null == user) {
+			log.info("####非法请求####");
 			controller.redirect("/");
 		}else {
 			ai.invoke();

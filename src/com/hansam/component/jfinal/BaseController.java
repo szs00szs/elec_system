@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.hansam.modules.system.user.User;
+import com.hansam.util.Attr;
 import com.hansam.util.Config;
 import com.hansam.util.DateUtils;
 import com.hansam.util.StrUtils;
@@ -72,11 +73,44 @@ public class BaseController extends Controller {
 		return DateUtils.getNow(DateUtils.DEFAULT_REGEX_YYYYMMDD);
 	}
 
-	private static final DESUtils COOKIE_DES = new DESUtils("ffcookie");
 
 	public User getSessionUser() {
 		User user = getSessionAttr("sessionUser");
 		return user;
+	}
+	
+	/**
+	 * 自定义分页方法
+	 * @return
+	 */
+	public Paginator getPaginator() {
+		Paginator paginator = new Paginator();
+		Integer pageNo = getParaToInt("pageNo");
+		if (pageNo != null && pageNo > 0) {
+			paginator.setPageNo(pageNo);
+		}
+		Integer pageSize = getParaToInt("recordsperpage");
+		if (pageSize != null && pageSize > 0) {
+			paginator.setPageSize(pageSize);
+		}
+		return paginator;
+	}
+	
+	/**
+	 * 
+	 * 覆盖原始方法，采用PAGE_MODEL_NAME做为前缀
+	 */
+	@Override
+	public <T> T getModel(Class<T> modelClass) {
+		return super.getModel(modelClass, Attr.PAGE_MODEL_NAME);
+	}
+	
+	/**
+	 * 
+	 * 新GetModel方法，采用PAGE_ATTR_NAME，作为前缀
+	 */
+	public <T> T getModelByAttr(Class<T> modelClass) {
+		return super.getModel(modelClass, Attr.PAGE_ATTR_NAME);
 	}
 
 }

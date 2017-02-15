@@ -61,7 +61,7 @@ public class Config {
 		String val = getStr(key);
 		return NumberUtils.parseLong(val);
 	}
-	
+
 	public static double getToDbl(String key) {
 		String val = getStr(key);
 		return NumberUtils.parseDbl(val);
@@ -136,6 +136,10 @@ public class Config {
 			}
 		}
 		return configFiles;
+	}
+
+	public static void main(String[] args) {
+		test();
 	}
 
 }

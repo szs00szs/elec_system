@@ -2,6 +2,8 @@ package com.hansam.modules.admin.device;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.hansam.component.annotation.ControllerBind;
 import com.hansam.component.excel.PoiKit;
 import com.hansam.component.excel.PoiRender;
@@ -19,11 +21,9 @@ import com.jfinal.plugin.activerecord.Record;
 @ControllerBind(controllerKey = "/admin/device")
 public class DeviceController extends BaseController {
 	public static final String path = "/pages/admin/device/device_";
+	public static final Logger log = Logger.getLogger(DeviceController.class);
 
 	public void list() {
-	
-		System.err.println(getSessionUser());
-
 		String starttime = getPara("starttime");
 		String endtime = getPara("endtime");
 
@@ -36,10 +36,10 @@ public class DeviceController extends BaseController {
 			sql.append(" and o1.create_time <= '").append(endtime).append("' ");
 		}
 
-		Page<Record> page = Db.paginate(getParaToInt(0, 1), 5,
+		Page<Record> page = Db.paginate(getParaToInt(0, 1), 10,
 				"SELECT " + "o1.id AS device_id,o1.`name` AS device_name, o1.run_status AS run_status, "
 						+ "o1.health_status AS health_status, o1.create_time create_time, "
-						+ "o1.last_time last_time, o2.area_name AS area_name",
+						+ "o1.update_time update_time, o2.area_name AS area_name",
 				sql.toString());
 
 		setAttr("page", page);
@@ -65,15 +65,31 @@ public class DeviceController extends BaseController {
 	}
 	
 	public void add(){
+		render(path + "add.html");
+		
+	}
+	
+	public void edit() {
+		TbDevice model = TbDevice.dao.findById(getPara());
+		setAttr("model", model);
+		render(path + "edit.html");
+	}
+	
+	public void save(){
 		
 	}
 	
 	public void delete(){
-		System.err.println("jjjj");		
+		boolean isSuccess = TbDevice.dao.deleteById(getParaToInt());	
+		if (isSuccess) {
+			log.info("设备删除成功,id="+getPara());
+			redirect("/admin/device/list");
+		}else {
+			return;
+		}
 	}
 	
 	public void export(){
-		
 		String starttime = getPara("starttime");
 		String endtime = getPara("endtime");
 

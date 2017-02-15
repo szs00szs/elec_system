@@ -3,11 +3,12 @@ package com.hansam.component.config;
 import org.beetl.core.GroupTemplate;
 import org.beetl.ext.jfinal.BeetlRenderFactory;
 
+import com.hansam.component.annotation.AutoBindModels;
 import com.hansam.component.annotation.AutoBindRoutes;
+import com.hansam.component.beelt.BeeltFunctions;
 import com.hansam.component.interceptor.ExceptionInterceptor;
 import com.hansam.component.interceptor.UserInterceptor;
-import com.hansam.modules.admin.student.Student;
-import com.hansam.modules.system.user.User;
+import com.hansam.util.Config;
 import com.hansam.util.StrUtils;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -16,6 +17,8 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
 import com.jfinal.log.Log4jLogFactory;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.cache.EhCache;
@@ -30,7 +33,7 @@ public class BaseConfig extends JFinalConfig {
 
 	@Override
 	public void configConstant(Constants me) {
-		me.setDevMode(true);
+		me.setDevMode(isDevMode());
 		me.setViewType(ViewType.JSP);
 
 		me.setError401View("/pages/error/401.html");
@@ -41,9 +44,9 @@ public class BaseConfig extends JFinalConfig {
 
 		// 使用beetle模板
 		me.setMainRenderFactory(new BeetlRenderFactory());
-		@SuppressWarnings("unused")
 		GroupTemplate groupTemplate = BeetlRenderFactory.groupTemplate;
-		groupTemplate.registerFunctionPackage("strutil", StrUtils.class);
+		groupTemplate.registerFunctionPackage("strUtils", StrUtils.class);
+		groupTemplate.registerFunctionPackage("beeltFuncs", BeeltFunctions.class);
 	}
 
 	@Override
@@ -59,15 +62,27 @@ public class BaseConfig extends JFinalConfig {
 	@Override
 	public void configPlugin(Plugins me) {
 		// mysql 数据源
-		C3p0Plugin cp = new C3p0Plugin("jdbc:mysql://localhost:3306/elec_system", "root", "root");
+		Prop p = PropKit.use("conf/db.properties");
+		String jdbcUrl = p.get("jdbcUrl");
+		String username = p.get("username");
+		String password = p.get("password");
+
+		C3p0Plugin cp = new C3p0Plugin(jdbcUrl, username, password);
 		me.add(cp);
 
 		// mysql ActiveRecrodPlugin 实例，并指定configName为 mysql
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(cp);
 		me.add(arp);
+		if (isDevMode()) {
+			arp.setShowSql(true);
+		}
 		arp.setCache(new EhCache());
-		arp.addMapping("student", Student.class);
-		arp.addMapping("user", User.class);
+//		arp.addMapping("user", User.class);
+		
+		// 使用注解 绑定model和table映射
+		AutoBindModels autoBindModels = new AutoBindModels(arp);
+		autoBindModels.config();
+		
 	}
 
 	@Override
@@ -105,6 +120,10 @@ public class BaseConfig extends JFinalConfig {
 	public void beforeJFinalStop() {
 		// TODO Auto-generated method stub
 		super.beforeJFinalStop();
+	}
+
+	private boolean isDevMode() {
+		return Config.getToBoolean("CONSTANTS.DEV_MODE");
 	}
 
 }

@@ -1,7 +1,11 @@
 package com.hansam.modules.system.user;
 
+import java.util.List;
+import java.util.Map;
+
 import com.hansam.component.annotation.ControllerBind;
 import com.hansam.component.jfinal.BaseController;
+import com.hansam.modules.system.menu.TbSysMenu;
 import com.hansam.util.Md5Utils;
 import com.hansam.util.StrUtils;
 import com.jfinal.aop.Clear;
@@ -90,7 +94,15 @@ public class UserController extends BaseController{
 	}
 
 	public void setUser(User user) {
+		// 注入用户
 		setSessionAttr("sessionUser", user);
+		
+		// 如果是管理员 设置菜单权限
+		if (user.getInt("user_type") == 1){
+		Map<Integer, List<TbSysMenu>> map = new UserService().getAuthMap(user);
+		// 注入菜单
+		setSessionAttr("menu", map);
+		}
 	}
 
 }
